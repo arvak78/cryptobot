@@ -1,5 +1,6 @@
 package com.cryptopia;
 
+import com.cryptopia.pub.CryptopiaPublicApi;
 import com.model.Currency;
 import org.junit.Test;
 
@@ -15,7 +16,8 @@ public class IntegrationTest {
     @Test
     public void testGetCurrencies() {
 
-
+        CryptopiaPublicApi app = new CryptopiaPublicApi();
+        app.getCurrencies();
 
 
     }
