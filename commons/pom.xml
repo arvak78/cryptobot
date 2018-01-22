@@ -3,17 +3,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.cryptopia</groupId>
-	<artifactId>cryptopia</artifactId>
+	<groupId>com.commons</groupId>
+	<artifactId>commons</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>cryptopia</name>
-	<description>Cryptopia Module</description>
+	<name>commons</name>
+	<description>Commons Module</description>
 
 	<parent>
-		<groupId>com.connectors</groupId>
-		<artifactId>connectors</artifactId>
+		<groupId>com.cryptobot</groupId>
+		<artifactId>cryptobot</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
@@ -36,43 +36,21 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>com.sun.jersey</groupId>-->
-			<!--<artifactId>jersey-client</artifactId>-->
-		<!--</dependency>-->
-		<!--<dependency>-->
-			<!--<groupId>org.glassfish.jersey.media</groupId>-->
-			<!--<artifactId>jersey-media-json-jackson</artifactId>-->
-			<!--<version>2.25.1</version>-->
-		<!--</dependency>-->
 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-client</artifactId>
-			<version>3.1.4.Final</version>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.11</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson-provider</artifactId>
-			<version>3.1.4.Final</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>com.commons</groupId>
-			<artifactId>commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-model</artifactId>
+			<version>3.3.9</version>
 		</dependency>
 		<dependency>
-			<groupId>com.connectors</groupId>
-			<artifactId>connectors</artifactId>
-			<version>1.5.9.RELEASE</version>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>3.0</version>
 		</dependency>
-
 
 	</dependencies>
 

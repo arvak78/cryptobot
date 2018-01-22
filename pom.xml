@@ -21,6 +21,7 @@
 	<modules>
 		<module>connectors</module>
 		<module>connectors/cryptopia</module>
+		<module>commons</module>
 	</modules>
 
 	<properties>
@@ -88,7 +89,6 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-
 	</dependencies>
 
 	<build>
