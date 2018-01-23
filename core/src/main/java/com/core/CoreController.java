@@ -3,13 +3,14 @@ package com.core;
 import com.commons.Exchanges;
 import com.commons.annotations.Exchange;
 import com.commons.constants.CacheConstants;
+import com.commons.exceptions.ExchangeException;
 import com.commons.exceptions.MarshallException;
 import com.commons.model.Currency;
 import com.commons.model.ExchangesApi;
 import com.commons.model.Response;
-import com.commons.utils.reflection.FindAnnotation;
 import com.core.cache.ConnectorService;
 import com.core.cache.CurrencyService;
+import com.commons.utils.reflection.FindAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -68,9 +69,7 @@ public class CoreController {
 
                 addToCacheCurrenciesByExchange(key, currencies);
 
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException|IllegalAccessException|ExchangeException e) {
                 e.printStackTrace();
             }
 
