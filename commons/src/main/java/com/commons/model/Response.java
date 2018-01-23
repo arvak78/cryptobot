@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Response{
+public class Response<T> {
 
 	@JsonProperty("Message")
 	private Object message;
@@ -17,7 +17,7 @@ public class Response{
 	private Object error;
 
 	@JsonProperty("Data")
-	private List<Currency> data;
+	private List<T> data;
 
 	@JsonProperty("Success")
 	private boolean success;

@@ -93,9 +93,9 @@ public class CoreController {
 
             try {
                 ExchangesApi api = (ExchangesApi) aClass.newInstance();
-                Response currencies = api.getCurrencies();
+                Response<Currency> response = api.getCurrencies();
 
-                addToCacheCurrenciesByExchange(key, currencies);
+                addToCacheCurrenciesByExchange(key, response.getData());
 
             } catch (InstantiationException|IllegalAccessException|ExchangeException e) {
                 e.printStackTrace();
@@ -107,8 +107,8 @@ public class CoreController {
 
     }
 
-    private void addToCacheCurrenciesByExchange(Exchanges key, Response currencies) {
-        for (Currency currency : currencies.getData()) {
+    private void addToCacheCurrenciesByExchange(Exchanges key, List<Currency> data) {
+        for (Currency currency : data) {
             currencyService.play(key, currency);
         }
     }
