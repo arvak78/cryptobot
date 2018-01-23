@@ -57,15 +57,11 @@
 			<artifactId>connectors</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-
-
 		<dependency>
 			<groupId>com.commons</groupId>
 			<artifactId>commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-client</artifactId>
@@ -76,7 +72,6 @@
 			<artifactId>resteasy-jackson-provider</artifactId>
 			<version>3.1.4.Final</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
@@ -105,6 +100,18 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Spring Object/XML Mapping support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+		</dependency>
+
+		<!-- Spring Batch -->
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-core</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -8,9 +8,12 @@ import com.commons.exceptions.MarshallException;
 import com.commons.model.Currency;
 import com.commons.model.ExchangesApi;
 import com.commons.model.Response;
+import com.commons.utils.reflection.FindAnnotation;
 import com.core.cache.ConnectorService;
 import com.core.cache.CurrencyService;
-import com.commons.utils.reflection.FindAnnotation;
+import com.core.utils.ExchangeMatch;
+import com.core.utils.OperationCurrencies;
+import com.core.utils.ReadXml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -18,6 +21,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,12 +33,14 @@ import java.util.Map;
 @Controller
 public class CoreController {
 
+    private OperationCurrencies operationCurrencies;
+    private Map<Exchanges, ExchangeMatch> matchCurrenciesByExchange;
+
     @Autowired
     private ConnectorService connectorService;
 
     @Autowired
     private CurrencyService currencyService;
-
 
     @Autowired
     private CacheManager cacheManager;
@@ -41,12 +49,32 @@ public class CoreController {
     public void startExchanges() throws MarshallException, IOException {
 
         Map<Exchanges, Class> allClassesAnnotatedBy = FindAnnotation.findAllClassesAnnotatedBy(Exchange.class);
-
         initConnectorsAndCurrencies(allClassesAnnotatedBy);
+        findMatchCurrenciesByExchange();
 
-        // Get from cache
-        cacheManager.getCache(CacheConstants.CONNECTORS).get(Exchanges.CRYPTOPIA);
-        cacheManager.getCache(CacheConstants.CURRENCIES).get(Exchanges.CRYPTOPIA + "BTC");
+    }
+
+    private void findMatchCurrenciesByExchange() {
+        Map<Exchanges, ExchangeMatch> mapMatch = new HashMap<>();
+        for (Exchanges exchange0 : Exchanges.values()) {
+            ExchangeMatch match = new ExchangeMatch(exchange0);
+            List<String> currencyMatchList = new ArrayList<>();
+            for (Exchanges exchange1 : Exchanges.values()) {
+                for (com.core.utils.Currency currency : operationCurrencies.getCurrency()) {
+                    if (exchange0 != exchange1) {
+                        Currency currency0 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange0 + currency.getSymbol(), Currency.class);
+                        Currency currency1 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange1 + currency.getSymbol(), Currency.class);
+                        if (currency0 != null && currency1 != null) {
+                            currencyMatchList.add(currency.getSymbol());
+                        }
+                        match.addMatch(exchange1, currencyMatchList);
+                    }
+                }
+            }
+            mapMatch.put(exchange0, match);
+        }
+
+        matchCurrenciesByExchange = mapMatch;
     }
 
     /**
@@ -74,6 +102,9 @@ public class CoreController {
             }
 
         }
+
+        operationCurrencies = ReadXml.readOperatingCurrencies();
+
     }
 
     private void addToCacheCurrenciesByExchange(Exchanges key, Response currencies) {

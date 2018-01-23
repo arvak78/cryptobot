@@ -24,7 +24,7 @@ public class BinanceToBot {
             for (SymbolsItem symbol : binanceResponse.getSymbols()) {
                 Currency currency = new Currency();
 
-                currency.setSymbol(symbol.getSymbol());
+                currency.setSymbol(symbol.getBaseAsset());
                 currency.setStatus(symbol.getStatus());
 
 
@@ -39,7 +39,13 @@ public class BinanceToBot {
                     currency.setMinWithdraw(lotFilter.getMinQty());
                 }
 
-                currencies.add(currency);
+                // Evita duplicidades ya que en la lista salen varios casos
+                // BTCEHC
+                // BTCUSD
+                if(!currencies.contains(currency)) {
+                    currencies.add(currency);
+                }
+
             }
 
             response.setData(currencies);
