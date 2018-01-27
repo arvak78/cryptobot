@@ -63,22 +63,22 @@
             <!--<version>0.0.1-SNAPSHOT</version>-->
         <!--</dependency>-->
 
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-client</artifactId>
-			<version>3.1.4.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson-provider</artifactId>
-			<version>3.1.4.Final</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.jboss.resteasy</groupId>-->
+			<!--<artifactId>resteasy-client</artifactId>-->
+			<!--<version>3.1.4.Final</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.jboss.resteasy</groupId>-->
+			<!--<artifactId>resteasy-jackson-provider</artifactId>-->
+			<!--<version>3.1.4.Final</version>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>0.9.11</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.reflections</groupId>-->
+			<!--<artifactId>reflections</artifactId>-->
+			<!--<version>0.9.11</version>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model</artifactId>
@@ -100,7 +100,7 @@
 			<artifactId>ehcache</artifactId>
 		</dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>

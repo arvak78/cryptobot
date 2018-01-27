@@ -2,16 +2,16 @@ package com.cryptopia.pub;
 
 import com.commons.Exchanges;
 import com.commons.annotations.Exchange;
+import com.commons.exceptions.ExchangeException;
 import com.commons.exceptions.MarshallException;
 import com.commons.model.ExchangesApi;
-import com.commons.model.Response;
+import com.commons.model.BotResponse;
+import com.commons.model.Wrapper;
+import com.commons.utils.JsonClients;
 import com.commons.utils.Properties;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
+import com.cryptopia.model.Currency;
+import com.cryptopia.parser.CryptopiaToBot;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Created by manel on 19/01/18.
@@ -23,29 +23,18 @@ public class CryptopiaPublicApi implements ExchangesApi {
             getCodeSource().getLocation().getPath();
 
     @Override
-    public Response getCurrencies() throws MarshallException {
-
-        Response response = null;
+    public BotResponse getCurrencies() throws MarshallException, ExchangeException {
 
         String url = Properties.getApplicationProperties(PROPERTIES_PATH)
                 .getProperty("url.currencies");
 
-        try {
-            Client client = ClientBuilder.newClient();
+        Wrapper cryptopiaResponse = JsonClients.getInstance().
+                buildWithMapper(new TypeReference<Wrapper<Currency>>() {}, url);
 
-            //TODO: Se deberia poder hacer el unmarshall desde aqui
-            String currency = client.target(url)
-                    .request(MediaType.APPLICATION_JSON)
-                    .get(String.class);
+        CryptopiaToBot toBot = new CryptopiaToBot();
+        BotResponse botResponse = toBot.parseCurrencies(cryptopiaResponse);
 
-            ObjectMapper mapper = new ObjectMapper();
-
-            response = mapper.readValue(currency, Response.class);
-        } catch (IOException e) {
-            throw new MarshallException();
-        }
-
-        return response;
+        return botResponse;
 
     }
 

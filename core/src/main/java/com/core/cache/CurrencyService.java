@@ -2,7 +2,7 @@ package com.core.cache;
 
 import com.commons.Exchanges;
 import com.commons.constants.CacheConstants;
-import com.commons.model.Currency;
+import com.commons.model.BotCurrency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
@@ -20,7 +20,7 @@ public class CurrencyService {
     public void clearCache(){}
 
     @Cacheable(value = CacheConstants.CURRENCIES, key = "#exchange+#currency.symbol")
-    public Currency play(Exchanges exchange, Currency currency) {
+    public BotCurrency play(Exchanges exchange, BotCurrency currency) {
         return currency;
     }
 

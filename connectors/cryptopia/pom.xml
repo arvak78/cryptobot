@@ -25,16 +25,16 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter</artifactId>-->
+		<!--</dependency>-->
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-starter-test</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 
 		<!--<dependency>-->
 			<!--<groupId>com.sun.jersey</groupId>-->
@@ -67,11 +67,11 @@
 			<artifactId>commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>com.connectors</groupId>-->
-			<!--<artifactId>connectors</artifactId>-->
-			<!--<version>1.5.9.RELEASE</version>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>com.connectors</groupId>
+			<artifactId>connectors</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 
 	</dependencies>

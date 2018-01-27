@@ -1,16 +1,16 @@
 package com.binancex.pub;
 
+import com.binancex.model.Response;
 import com.binancex.parser.BinanceToBot;
 import com.commons.Exchanges;
 import com.commons.annotations.Exchange;
 import com.commons.exceptions.ExchangeException;
+import com.commons.exceptions.MarshallException;
+import com.commons.model.BotResponse;
 import com.commons.model.ExchangesApi;
-import com.commons.model.Response;
+import com.commons.model.Wrapper;
+import com.commons.utils.JsonClients;
 import com.commons.utils.Properties;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
 
 /**
  * Created by manel on 19/01/18.
@@ -22,28 +22,19 @@ public class BinancePublicApi implements ExchangesApi {
             getCodeSource().getLocation().getPath();
 
     @Override
-    public Response getCurrencies() throws ExchangeException {
+    public BotResponse getCurrencies() throws ExchangeException, MarshallException {
 
-        Response response = new Response();
+        BotResponse botResponse = null;
 
         String url = Properties.getApplicationProperties(PROPERTIES_PATH)
                 .getProperty("url.currencies");
 
-        try {
-            Client client = ClientBuilder.newClient();
+        Wrapper binanceRS = JsonClients.getInstance().build(Response.class, url);
 
-            com.binancex.model.Response binanceResponse = client.target(url)
-                    .request(MediaType.APPLICATION_JSON)
-                    .get(com.binancex.model.Response.class);
+        BinanceToBot toBot = new BinanceToBot();
+        botResponse = toBot.parseCurrency(binanceRS);
 
-            BinanceToBot toBot = new BinanceToBot();
-            response = toBot.parseCurrency(binanceResponse);
-
-        } catch (Exception e) {
-            throw new ExchangeException();
-        }
-
-        return response;
+        return botResponse;
 
     }
 

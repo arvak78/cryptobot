@@ -5,9 +5,9 @@ import com.commons.annotations.Exchange;
 import com.commons.constants.CacheConstants;
 import com.commons.exceptions.ExchangeException;
 import com.commons.exceptions.MarshallException;
-import com.commons.model.Currency;
+import com.commons.model.BotCurrency;
+import com.commons.model.BotResponse;
 import com.commons.model.ExchangesApi;
-import com.commons.model.Response;
 import com.commons.utils.reflection.FindAnnotation;
 import com.core.cache.ConnectorService;
 import com.core.cache.CurrencyService;
@@ -62,8 +62,8 @@ public class CoreController {
             for (Exchanges exchange1 : Exchanges.values()) {
                 for (com.core.utils.Currency currency : operationCurrencies.getCurrency()) {
                     if (exchange0 != exchange1) {
-                        Currency currency0 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange0 + currency.getSymbol(), Currency.class);
-                        Currency currency1 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange1 + currency.getSymbol(), Currency.class);
+                        BotCurrency currency0 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange0 + currency.getSymbol(), BotCurrency.class);
+                        BotCurrency currency1 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange1 + currency.getSymbol(), BotCurrency.class);
                         if (currency0 != null && currency1 != null) {
                             currencyMatchList.add(currency.getSymbol());
                         }
@@ -93,7 +93,7 @@ public class CoreController {
 
             try {
                 ExchangesApi api = (ExchangesApi) aClass.newInstance();
-                Response<Currency> response = api.getCurrencies();
+                BotResponse<BotCurrency> response = api.getCurrencies();
 
                 addToCacheCurrenciesByExchange(key, response.getData());
 
@@ -107,8 +107,8 @@ public class CoreController {
 
     }
 
-    private void addToCacheCurrenciesByExchange(Exchanges key, List<Currency> data) {
-        for (Currency currency : data) {
+    private void addToCacheCurrenciesByExchange(Exchanges key, List<BotCurrency> data) {
+        for (BotCurrency currency : data) {
             currencyService.play(key, currency);
         }
     }

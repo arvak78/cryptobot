@@ -1,7 +1,8 @@
 package com.cryptopia;
 
+import com.commons.exceptions.ExchangeException;
 import com.commons.exceptions.MarshallException;
-import com.commons.model.Response;
+import com.commons.model.BotResponse;
 import com.cryptopia.pub.CryptopiaPublicApi;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -18,10 +19,10 @@ import java.io.IOException;
 public class IntegrationTest {
 
     @Test
-    public void testGetCurrencies() throws MarshallException {
+    public void testGetCurrencies() throws MarshallException, ExchangeException {
 
         CryptopiaPublicApi app = new CryptopiaPublicApi();
-        Response currencies = app.getCurrencies();
+        BotResponse currencies = app.getCurrencies();
 
         Assert.assertNotNull(currencies);
         Assert.assertNotNull(currencies.getData());
@@ -60,7 +61,7 @@ public class IntegrationTest {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        Response readValue = mapper.readValue(jsonAsString, Response.class);
+        BotResponse readValue = mapper.readValue(jsonAsString, BotResponse.class);
 
         System.out.println(readValue);
     }
