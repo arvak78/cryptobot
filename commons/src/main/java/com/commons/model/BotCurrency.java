@@ -1,6 +1,5 @@
 package com.commons.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +7,6 @@ import javax.annotation.Generated;
 import java.util.HashSet;
 import java.util.Set;
 
-@Generated("com.robohorse.robopojogenerator")
 @Getter
 @Setter
 public class BotCurrency {
@@ -18,15 +16,17 @@ public class BotCurrency {
 	private String name;
 	private String listingStatus;
 	private Set<String> quotes = new HashSet<>();
-	private int depositConfirmations;
-	private int id;
+	private int depositConfirmations; // BORRAR
+	private int id; // BORRAR
+	private double maxQty;
+	private double minQty;
 	private double withdrawFee;
-	private double minTip;
+	private double minTip; // BORRAR
 	private double maxWithdraw;
-	private boolean isTipEnabled;
+	private boolean isTipEnabled; // BORRAR
 	private double minWithdraw;
-	private double minBaseTrade;
-	private Object statusMessage;
+	private double minBaseTrade; // BORRAR
+	private Object statusMessage; // BORRAR
 
 	@Override
 	public boolean equals(Object o) {

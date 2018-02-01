@@ -1,15 +1,21 @@
 package com.binancex.parser;
 
 import com.binancex.constants.FilterType;
-import com.binancex.model.FiltersItem;
-import com.binancex.model.Response;
-import com.binancex.model.SymbolsItem;
-import com.commons.model.BotResponse;
+import com.binancex.model.currencies.FiltersItem;
+import com.binancex.model.currencies.Response;
+import com.binancex.model.currencies.SymbolsItem;
+import com.binancex.model.prices.Prices;
+import com.commons.Exchanges;
+import com.commons.constants.ExchangeConstants;
 import com.commons.model.BotCurrency;
+import com.commons.model.BotPrice;
+import com.commons.model.BotResponse;
 import com.commons.model.Wrapper;
 import com.commons.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by manel on 22/01/18.
@@ -23,7 +29,7 @@ public class BinanceToBot {
             response.setSuccess(true);
             ArrayList<BotCurrency> currencies = new ArrayList<>();
 
-            for (com.binancex.model.Response binanceResponse : wrapper.getData()) {
+            for (Response binanceResponse : wrapper.getData()) {
 
                 for (SymbolsItem symbol : binanceResponse.getSymbols()) {
 
@@ -48,8 +54,8 @@ public class BinanceToBot {
 
                     FiltersItem lotFilter = getFilter(symbol, FilterType.LOT_SIZE);
                     if (lotFilter != null) {
-                        currency.setMaxWithdraw(lotFilter.getMaxQty()); //TODO: comprobar con Alex
-                        currency.setMinWithdraw(lotFilter.getMinQty());
+                        currency.setMaxQty(lotFilter.getMaxQty()); //TODO: comprobar con Alex
+                        currency.setMinQty(lotFilter.getMinQty());
                     }
 
                     // Evita duplicidades ya que en la lista salen varios casos
@@ -78,6 +84,29 @@ public class BinanceToBot {
         }
 
         return null;
+    }
+
+    public Map<String, BotPrice> parsePrices(Wrapper<Prices> pricesWrapper) {
+
+        Map<String, BotPrice> binanceMapPrice = new HashMap<>();
+
+        if (pricesWrapper != null) {
+            for (Prices price : pricesWrapper.getData()) {
+                BotPrice botPrice = new BotPrice();
+                botPrice.setAskPrice(price.getAskPrice() != null ? Double.parseDouble(price.getAskPrice()) : 0);
+                botPrice.setBidPrice(price.getBidPrice() != null ? Double.parseDouble(price.getBidPrice()) : 0);
+                botPrice.setAskQty(price.getAskQty() != null ? Double.parseDouble(price.getAskQty()) : 0);
+                botPrice.setBidQty(price.getBidQty() != null ? Double.parseDouble(price.getBidQty()) : 0);
+
+                //BINANCE#BRDBTC
+                StringBuffer sb = new StringBuffer();
+                sb.append(Exchanges.BINANCE).append(ExchangeConstants.PRICE_KEY_SPLIT).
+                        append(price.getSymbol());
+                binanceMapPrice.put(sb.toString(), botPrice);
+            }
+        }
+
+        return binanceMapPrice;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.binancex.model;
+package com.binancex.model.currencies;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;

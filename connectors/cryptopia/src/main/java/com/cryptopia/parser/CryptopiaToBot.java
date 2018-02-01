@@ -1,9 +1,11 @@
 package com.cryptopia.parser;
 
 import com.commons.model.BotCurrency;
+import com.commons.model.BotPrice;
 import com.commons.model.BotResponse;
 import com.commons.model.Wrapper;
 import com.cryptopia.model.Currency;
+import com.cryptopia.model.Price;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,23 @@ public class CryptopiaToBot {
         }
 
         return botResponse;
+    }
+
+    public Wrapper<BotPrice> parsePrices(Wrapper<Price> priceWrap) {
+        if (priceWrap != null) {
+            Wrapper<BotPrice> botPriceWrap = new Wrapper<>();
+            ArrayList<BotPrice> botPriceArrayList = new ArrayList<>();
+            for (Price price : priceWrap.getData()) {
+                BotPrice botPrice = new BotPrice();
+                botPrice.setSymbol(price.getLabel());
+                botPrice.setBidPrice(price.getBidPrice());
+                botPrice.setAskPrice(price.getAskPrice());
+                botPriceArrayList.add(botPrice);
+            }
+            botPriceWrap.setData(botPriceArrayList);
+            return botPriceWrap;
+        }
+        return null;
     }
 
 }

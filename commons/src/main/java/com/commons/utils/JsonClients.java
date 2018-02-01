@@ -14,6 +14,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.Future;
 
 /**
  * Created by Manel on 27/01/2018.
@@ -69,13 +70,58 @@ public class JsonClients<T>{
                     .get(data);
 
             exchangeResponse.setSuccess(true);
-            exchangeResponse.setData(Collections.singletonList(t));
+//            exchangeResponse.setData(Collections.singletonList(generic));
 
         } catch (Exception e) {
             throw new ExchangeException("Error en la llamada al exchange: " + url);
         }
 
         return exchangeResponse;
+    }
+
+    public Future<T> buildAsync(Class<T> data, String url) throws MarshallException, ExchangeException {
+
+        Future<T> future = null;
+
+        try {
+
+            future = client.target(url)
+                    .request(MediaType.APPLICATION_JSON).async()
+                    .get(data);
+
+//            exchangeResponse.setSuccess(true);
+//            exchangeResponse.setData(Collections.singletonList(generic));
+
+        } catch (Exception e) {
+            throw new ExchangeException("Error en la llamada al exchange: " + url);
+        }
+
+        return future;
+    }
+
+    public Future<T> buildWithMapperAsync(TypeReference type, String url) throws MarshallException, ExchangeException {
+
+        Wrapper<T> response = null;
+
+        try {
+
+            //TODO: Se deberia poder hacer el unmarshall desde aqui
+            client.getConfiguration().getPropertyNames();
+            Future<String> currency = client.target(url)
+                    .request(MediaType.APPLICATION_JSON).async()
+                    .get(String.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+//            response = mapper.readValue(currency, type);
+
+
+        } catch (Exception e) {
+            throw new ExchangeException("Error en la llamada al exchange: " + url);
+        }
+
+        return null;
     }
 
 

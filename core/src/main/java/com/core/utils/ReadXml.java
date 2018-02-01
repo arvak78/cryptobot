@@ -12,7 +12,6 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 @Configuration
 public class ReadXml {
 
-    @Autowired
     private static Logger log; // = LoggerFactory.getLogger(CurrencyService.class);
 
     public static OperationCurrencies readOperatingCurrencies() {
