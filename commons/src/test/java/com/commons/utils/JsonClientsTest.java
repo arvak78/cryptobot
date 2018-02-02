@@ -24,7 +24,7 @@ public class JsonClientsTest {
         defaultClientConfig.getFeatures().put("FAIL_ON_UNKNOWN_PROPERTIES", false);
         Client client = Client.create(defaultClientConfig);
 
-//            Client client = Client.create();
+//            Client asyncClient = Client.create();
 
             WebResource webResource = client
                     .resource("https://www.cryptopia.co.nz/api/GetMarkets");

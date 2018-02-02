@@ -1,12 +1,12 @@
 package com.commons.model;
 
-import com.commons.utils.Price;
+import java.util.Map;
 
 /**
  * Created by Manel on 01/02/2018.
  */
 public interface ExchangeTasks {
 
-    public Wrapper<BotPrice> getData();
+    public Map<String, BotPrice> getData();
 
 }

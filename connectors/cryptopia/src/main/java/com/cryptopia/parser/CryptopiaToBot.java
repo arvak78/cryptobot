@@ -1,5 +1,7 @@
 package com.cryptopia.parser;
 
+import com.commons.Exchanges;
+import com.commons.constants.ExchangeConstants;
 import com.commons.model.BotCurrency;
 import com.commons.model.BotPrice;
 import com.commons.model.BotResponse;
@@ -8,7 +10,9 @@ import com.cryptopia.model.Currency;
 import com.cryptopia.model.Price;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Manel on 27/01/2018.
@@ -43,19 +47,22 @@ public class CryptopiaToBot {
         return botResponse;
     }
 
-    public Wrapper<BotPrice> parsePrices(Wrapper<Price> priceWrap) {
+    public Map<String, BotPrice> parsePrices(Wrapper<Price> priceWrap) {
         if (priceWrap != null) {
-            Wrapper<BotPrice> botPriceWrap = new Wrapper<>();
-            ArrayList<BotPrice> botPriceArrayList = new ArrayList<>();
+            Map<String, BotPrice> cryptopiaMapPrice = new HashMap<>();
             for (Price price : priceWrap.getData()) {
                 BotPrice botPrice = new BotPrice();
                 botPrice.setSymbol(price.getLabel());
                 botPrice.setBidPrice(price.getBidPrice());
                 botPrice.setAskPrice(price.getAskPrice());
-                botPriceArrayList.add(botPrice);
+
+                StringBuffer sb = new StringBuffer();
+                sb.append(Exchanges.CRYPTOPIA).append(ExchangeConstants.PRICE_KEY_SPLIT).
+                        append(price.getLabel());
+                cryptopiaMapPrice.put(sb.toString(), botPrice);
             }
-            botPriceWrap.setData(botPriceArrayList);
-            return botPriceWrap;
+
+            return cryptopiaMapPrice;
         }
         return null;
     }

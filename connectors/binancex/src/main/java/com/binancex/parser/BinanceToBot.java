@@ -11,6 +11,7 @@ import com.commons.model.BotCurrency;
 import com.commons.model.BotPrice;
 import com.commons.model.BotResponse;
 import com.commons.model.Wrapper;
+import com.commons.utils.ListUtils;
 import com.commons.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -71,9 +72,10 @@ public class BinanceToBot {
 
                 response.setData(currencies);
             }
-        }
 
-        return response;
+            return response;
+        }
+        return null;
     }
 
     private FiltersItem getFilter(SymbolsItem symbol, FilterType filter) {
@@ -86,12 +88,12 @@ public class BinanceToBot {
         return null;
     }
 
-    public Map<String, BotPrice> parsePrices(Wrapper<Prices> pricesWrapper) {
+    public Map<String, BotPrice> parsePrices(Prices[] pricesWrapper) {
 
         Map<String, BotPrice> binanceMapPrice = new HashMap<>();
 
         if (pricesWrapper != null) {
-            for (Prices price : pricesWrapper.getData()) {
+            for (Prices price : pricesWrapper) {
                 BotPrice botPrice = new BotPrice();
                 botPrice.setAskPrice(price.getAskPrice() != null ? Double.parseDouble(price.getAskPrice()) : 0);
                 botPrice.setBidPrice(price.getBidPrice() != null ? Double.parseDouble(price.getBidPrice()) : 0);

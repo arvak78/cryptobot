@@ -38,7 +38,7 @@
 
 		<!--<dependency>-->
 			<!--<groupId>com.sun.jersey</groupId>-->
-			<!--<artifactId>jersey-client</artifactId>-->
+			<!--<artifactId>jersey-asyncClient</artifactId>-->
 		<!--</dependency>-->
 		<!--<dependency>-->
 			<!--<groupId>org.glassfish.jersey.media</groupId>-->

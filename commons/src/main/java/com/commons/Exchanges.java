@@ -1,5 +1,7 @@
 package com.commons;
 
+import org.springframework.stereotype.Service;
+
 /**
  * Created by manel on 21/01/18.
  */
