@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Generated;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -14,70 +15,48 @@ public class Price {
 	private double high;
 
 	@JsonProperty("BaseVolume")
-	private double baseVolume;
+	private BigDecimal baseVolume;
 
 	@JsonProperty("Label")
 	private String label;
 
 	@JsonProperty("Change")
-	private double change;
+	private BigDecimal change;
 
 	@JsonProperty("BuyBaseVolume")
-	private double buyBaseVolume;
+	private BigDecimal buyBaseVolume;
 
 	@JsonProperty("LastPrice")
-	private double lastPrice;
+	private BigDecimal lastPrice;
 
 	@JsonProperty("SellBaseVolume")
-	private double sellBaseVolume;
+	private BigDecimal sellBaseVolume;
 
 	@JsonProperty("BuyVolume")
-	private double buyVolume;
+	private BigDecimal buyVolume;
 
 	@JsonProperty("Open")
-	private double open;
+	private BigDecimal open;
 
 	@JsonProperty("BidPrice")
-	private double bidPrice;
+	private BigDecimal bidPrice;
 
 	@JsonProperty("SellVolume")
-	private double sellVolume;
+	private BigDecimal sellVolume;
 
 	@JsonProperty("Low")
-	private double low;
+	private BigDecimal low;
 
 	@JsonProperty("Volume")
-	private double volume;
+	private BigDecimal volume;
 
 	@JsonProperty("Close")
-	private double close;
+	private BigDecimal close;
 
 	@JsonProperty("AskPrice")
-	private double askPrice;
+	private BigDecimal askPrice;
 
 	@JsonProperty("TradePairId")
 	private int tradePairId;
 
-	@Override
- 	public String toString(){
-		return 
-			"Price{" +
-			"high = '" + high + '\'' + 
-			",baseVolume = '" + baseVolume + '\'' + 
-			",label = '" + label + '\'' + 
-			",change = '" + change + '\'' + 
-			",buyBaseVolume = '" + buyBaseVolume + '\'' + 
-			",lastPrice = '" + lastPrice + '\'' + 
-			",sellBaseVolume = '" + sellBaseVolume + '\'' + 
-			",buyVolume = '" + buyVolume + '\'' + 
-			",open = '" + open + '\'' + 
-			",bidPrice = '" + bidPrice + '\'' + 
-			",sellVolume = '" + sellVolume + '\'' + 
-			",low = '" + low + '\'' + 
-			",volume = '" + volume + '\'' + 
-			",close = '" + close + '\'' + 
-			",askPrice = '" + askPrice + '\'' + 
-			",tradePairId = '" + tradePairId + '\'' + 
-			"}";
-		}
 }

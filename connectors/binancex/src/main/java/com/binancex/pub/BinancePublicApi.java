@@ -20,9 +20,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.util.concurrent.ListenableFuture;
 
 /**
  * Created by manel on 19/01/18.
@@ -44,10 +43,10 @@ public class BinancePublicApi implements ExchangesApi {
         TypeReference<Response> typeReference = new TypeReference<Response>() {
         };
 
-        Wrapper binanceRS = JsonClients.getInstance().buildWithMapper(typeReference, url);
+        Object o = JsonClients.getInstance().buildWithMapper(typeReference, url);
 
         BinanceToBot toBot = new BinanceToBot();
-        botResponse = toBot.parseCurrency(binanceRS);
+        botResponse = toBot.parseCurrency((Response) o);
 
         return botResponse;
 

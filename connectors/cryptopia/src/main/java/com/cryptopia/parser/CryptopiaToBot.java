@@ -9,6 +9,8 @@ import com.commons.model.Wrapper;
 import com.cryptopia.model.Currency;
 import com.cryptopia.model.Price;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,19 +54,25 @@ public class CryptopiaToBot {
             Map<String, BotPrice> cryptopiaMapPrice = new HashMap<>();
             for (Price price : priceWrap.getData()) {
                 BotPrice botPrice = new BotPrice();
-                botPrice.setSymbol(price.getLabel());
+                botPrice.setSymbol(NormalizePriceLabel(price));
                 botPrice.setBidPrice(price.getBidPrice());
                 botPrice.setAskPrice(price.getAskPrice());
 
                 StringBuffer sb = new StringBuffer();
                 sb.append(Exchanges.CRYPTOPIA).append(ExchangeConstants.PRICE_KEY_SPLIT).
-                        append(price.getLabel());
+                        append(NormalizePriceLabel(price));
                 cryptopiaMapPrice.put(sb.toString(), botPrice);
             }
 
             return cryptopiaMapPrice;
         }
         return null;
+    }
+
+    private String NormalizePriceLabel(Price price) {
+        return price != null && price.getLabel() != null && price.getLabel().length() > 0 ?
+                price.getLabel().replaceAll("/", "") :
+                "";
     }
 
 }

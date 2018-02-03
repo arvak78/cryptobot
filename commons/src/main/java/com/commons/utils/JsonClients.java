@@ -32,7 +32,7 @@ public class JsonClients<T>{
 
     private Client client;
 
-    public Wrapper<T> buildWithMapper(TypeReference type, String url) throws MarshallException, ExchangeException {
+    public Wrapper<T> buildWithWrapperMapper(TypeReference type, String url) throws MarshallException, ExchangeException {
 
         Wrapper<T> response = null;
 
@@ -58,6 +58,34 @@ public class JsonClients<T>{
 
         return response;
     }
+
+    public T buildWithMapper(TypeReference type, String url) throws MarshallException, ExchangeException {
+
+        T response = null;
+
+        try {
+
+            //TODO: Se deberia poder hacer el unmarshall desde aqui
+            String currency = client.target(url)
+                    .request(MediaType.APPLICATION_JSON)
+                    .get(String.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            response = mapper.readValue(currency, type);
+
+        } catch (JsonParseException|JsonMappingException e) {
+            throw new MarshallException("Error en el unmarshall de: " + url);
+        } catch (IOException e) {
+            throw new MarshallException("Error en el unmarshall de: " + url);
+        } catch (IllegalArgumentException|NullPointerException e) {
+            throw new ExchangeException("Error en la llamada al exchange: " + url);
+        }
+
+        return response;
+    }
+
 
     public Wrapper<T> build(Class<T> data, String url) throws MarshallException, ExchangeException {
 
@@ -88,9 +116,6 @@ public class JsonClients<T>{
             future = client.target(url)
                     .request(MediaType.APPLICATION_JSON).async()
                     .get(data);
-
-//            exchangeResponse.setSuccess(true);
-//            exchangeResponse.setData(Collections.singletonList(generic));
 
         } catch (Exception e) {
             throw new ExchangeException("Error en la llamada al exchange: " + url);

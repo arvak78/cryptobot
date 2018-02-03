@@ -37,7 +37,7 @@ public class CryptopiaPublicApi implements ExchangesApi {
                 .getProperty("url.currencies");
 
         Wrapper cryptopiaResponse = JsonClients.getInstance().
-                buildWithMapper(new TypeReference<Wrapper<Currency>>() {}, url);
+                buildWithWrapperMapper(new TypeReference<Wrapper<Currency>>() {}, url);
 
         CryptopiaToBot toBot = new CryptopiaToBot();
         BotResponse botResponse = toBot.parseCurrencies(cryptopiaResponse);

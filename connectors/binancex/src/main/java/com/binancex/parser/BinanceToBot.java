@@ -23,57 +23,55 @@ import java.util.Map;
  */
 public class BinanceToBot {
 
-    public BotResponse parseCurrency(Wrapper<Response> wrapper) {
-        BotResponse<BotCurrency> response = new BotResponse<>();
+    public BotResponse parseCurrency(Response response) {
+        BotResponse<BotCurrency> botResponse = new BotResponse<>();
 
-        if (wrapper != null) {
-            response.setSuccess(true);
+        if (response != null) {
+            botResponse.setSuccess(true);
             ArrayList<BotCurrency> currencies = new ArrayList<>();
 
-            for (Response binanceResponse : wrapper.getData()) {
+            for (SymbolsItem symbol : ListUtils.nullSafe(response.getSymbols())) {
 
-                for (SymbolsItem symbol : binanceResponse.getSymbols()) {
+                BotCurrency currency = new BotCurrency();
 
-                    BotCurrency currency = new BotCurrency();
+                currency.setSymbol(symbol.getBaseAsset());
 
-                    currency.setSymbol(symbol.getBaseAsset());
+                if (currencies.contains(currency)) { // Si existe en la lista lo recuperamos
+                    currency = currencies.get(currencies.indexOf(currency));
+                } else { // Si no existe lo creamos y lo metemos en la lista
+                    currencies.add(currency);
+                }
 
-                    if (currencies.contains(currency)) { // Si existe en la lista lo recuperamos
-                        currency = currencies.get(currencies.indexOf(currency));
-                    } else { // Si no existe lo creamos y lo metemos en la lista
-                        currencies.add(currency);
-                    }
+                currency.getQuotes().add(symbol.getQuoteAsset());
 
-                    currency.getQuotes().add(symbol.getQuoteAsset());
+                currency.setStatus(symbol.getStatus());
 
-                    currency.setStatus(symbol.getStatus());
+                FiltersItem priceFilter = getFilter(symbol, FilterType.PRICE_FILTER);
+                if (priceFilter != null) {
+                    currency.setMinBaseTrade(StringUtils.StringToDouble(priceFilter.getMinPrice())); //TODO: comprobar con Alex
+                }
 
-                    FiltersItem priceFilter = getFilter(symbol, FilterType.PRICE_FILTER);
-                    if (priceFilter != null) {
-                        currency.setMinBaseTrade(StringUtils.StringToDouble(priceFilter.getMinPrice())); //TODO: comprobar con Alex
-                    }
+                FiltersItem lotFilter = getFilter(symbol, FilterType.LOT_SIZE);
+                if (lotFilter != null) {
+                    currency.setMaxQty(lotFilter.getMaxQty()); //TODO: comprobar con Alex
+                    currency.setMinQty(lotFilter.getMinQty());
+                }
 
-                    FiltersItem lotFilter = getFilter(symbol, FilterType.LOT_SIZE);
-                    if (lotFilter != null) {
-                        currency.setMaxQty(lotFilter.getMaxQty()); //TODO: comprobar con Alex
-                        currency.setMinQty(lotFilter.getMinQty());
-                    }
-
-                    // Evita duplicidades ya que en la lista salen varios casos
-                    // BTCEHC
-                    // BTCUSD
+                // Evita duplicidades ya que en la lista salen varios casos
+                // BTCEHC
+                // BTCUSD
 
 
 //                    if (!currencies.contains(currency)) {
 //                        currencies.add(currency);
 //                    }
-                }
 
 
-                response.setData(currencies);
-            }
 
-            return response;
+            botResponse.setData(currencies);
+        }
+
+            return botResponse;
         }
         return null;
     }
@@ -95,10 +93,11 @@ public class BinanceToBot {
         if (pricesWrapper != null) {
             for (Prices price : pricesWrapper) {
                 BotPrice botPrice = new BotPrice();
-                botPrice.setAskPrice(price.getAskPrice() != null ? Double.parseDouble(price.getAskPrice()) : 0);
-                botPrice.setBidPrice(price.getBidPrice() != null ? Double.parseDouble(price.getBidPrice()) : 0);
-                botPrice.setAskQty(price.getAskQty() != null ? Double.parseDouble(price.getAskQty()) : 0);
-                botPrice.setBidQty(price.getBidQty() != null ? Double.parseDouble(price.getBidQty()) : 0);
+                botPrice.setSymbol(price.getSymbol());
+                botPrice.setAskPrice(price.getAskPrice());
+                botPrice.setBidPrice(price.getBidPrice());
+                botPrice.setAskQty(price.getAskQty());
+                botPrice.setBidQty(price.getBidQty());
 
                 //BINANCE#BRDBTC
                 StringBuffer sb = new StringBuffer();

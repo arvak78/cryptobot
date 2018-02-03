@@ -8,20 +8,20 @@ import com.commons.exceptions.MarshallException;
 import com.commons.model.BotCurrency;
 import com.commons.model.BotResponse;
 import com.commons.model.ExchangesApi;
-import com.commons.utils.reflection.FindAnotations;
 import com.core.cache.ConnectorService;
 import com.core.cache.CurrencyService;
 import com.core.utils.ExchangeMatch;
 import com.core.utils.OperationCurrencies;
 import com.core.utils.ReadXml;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @EnableCaching
 @Service
@@ -39,13 +39,14 @@ public class Starter {
     @Autowired
     private CacheManager cacheManager;
 
-    private Map<Exchanges, Class> allClassesAnnotatedBy;
+    @Autowired
+    private FindAnnotation findAnnotation;
 
 
     public void initConfig() throws MarshallException, ExchangeException {
 
-        allClassesAnnotatedBy = FindAnotations.getInstance().findAllClassesAnnotatedBy(Exchange.class);
-        initConnectorsAndCurrencies(allClassesAnnotatedBy);
+//        allClassesAnnotatedBy = FindAnotations.getInstance().findAllClassesAnnotatedBy(Exchange.class);
+        initConnectorsAndCurrencies(findAnnotation.findAllClassesAnnotatedBy(Exchange.class));
         findMatchCurrenciesByExchange();
     }
 

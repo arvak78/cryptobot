@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Generated;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -14,14 +15,14 @@ public class BotPrice {
 	private String symbol;
 
 	@JsonProperty("askPrice")
-	private double askPrice;
+	private BigDecimal askPrice;
 
 	@JsonProperty("askQty")
-	private double askQty;
+	private BigDecimal askQty;
 
 	@JsonProperty("bidQty")
-	private double bidQty;
+	private BigDecimal bidQty;
 
 	@JsonProperty("bidPrice")
-	private double bidPrice;
+	private BigDecimal bidPrice;
 }
