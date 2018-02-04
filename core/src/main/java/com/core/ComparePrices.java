@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,12 +85,13 @@ public class ComparePrices {
                                         .divide(bidMaxPrices, 2, RoundingMode.HALF_UP)))
                                         .multiply(CENT);
 
+
                                 Oportunitat findedOportunity = filterResults.findOportunitat(oportunitat);
                                 if (findedOportunity == null) {
                                     filterResults.addOportunitat(oportunitat);
                                     addTelegramMessage(originExchange, destinyExchange, currency, askMinPrices, bidMaxPrices, profitPercent);
                                 } else {
-                                    findedOportunity.setLastPickOutInstant(Instant.now());
+                                    findedOportunity.setLastPickOutInstant(ZonedDateTime.now());
                                 }
                             }
                         }
@@ -97,6 +99,8 @@ public class ComparePrices {
                 }
             }
         }
+
+        filterResults.removePairs();
 
     }
 
@@ -121,7 +125,8 @@ public class ComparePrices {
         oportunitat.setQuoteCurrency(QUOTE_CURRENCY);
         oportunitat.setOriginPrice(price0);
         oportunitat.setDestinyPrice(price1);
-        oportunitat.setExposedInstant(Instant.now());
+        oportunitat.setExposedInstant(ZonedDateTime.now());
+        oportunitat.setLastPickOutInstant(ZonedDateTime.now());
         return oportunitat;
     }
 

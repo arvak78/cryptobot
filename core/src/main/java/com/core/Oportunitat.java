@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 
 /**
  * Created by Manel on 02/02/2018.
@@ -23,8 +24,8 @@ public class Oportunitat implements Comparable<Oportunitat> {
     private String quoteCurrency;
     private BotPrice originPrice;
     private BotPrice destinyPrice;
-    private Instant exposedInstant;
-    private Instant lastPickOutInstant;
+    private ZonedDateTime exposedInstant;
+    private ZonedDateTime lastPickOutInstant;
 
     @Override
     public int compareTo(Oportunitat o) {
@@ -35,8 +36,8 @@ public class Oportunitat implements Comparable<Oportunitat> {
                 .append(this.destinyExchange, o.destinyExchange)
                 .append(this.baseCurrency, o.baseCurrency)
                 .append(this.quoteCurrency, o.quoteCurrency)
-                .append(this.originPrice, o.originPrice)
-                .append(this.destinyPrice, o.destinyPrice)
+//                .append(this.originPrice, o.originPrice)
+//                .append(this.destinyPrice, o.destinyPrice)
                 .build();
 
         return isEquals ? 0 : 1;

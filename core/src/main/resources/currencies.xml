@@ -143,10 +143,10 @@
         <symbol>BTA</symbol>
         <trust>3</trust>
     </currency>
-    <currency>
-        <symbol>BAT</symbol>
-        <trust>3</trust>
-    </currency>
+    <!--<currency>-->
+        <!--<symbol>BAT</symbol>-->
+        <!--<trust>3</trust>-->
+    <!--</currency>-->
     <currency>
         <symbol>BCH</symbol>
         <trust>3</trust>
@@ -247,10 +247,11 @@
         <symbol>BDL</symbol>
         <trust>3</trust>
     </currency>
-    <currency>
-        <symbol>BTG</symbol>
-        <trust>3</trust>
-    </currency>
+    <!--REPETIDO-->
+    <!--<currency>-->
+        <!--<symbol>BTG</symbol>-->
+        <!--<trust>3</trust>-->
+    <!--</currency>-->
     <currency>
         <symbol>BRO</symbol>
         <trust>3</trust>
@@ -463,10 +464,10 @@
         <symbol>CV2</symbol>
         <trust>3</trust>
     </currency>
-    <currency>
-        <symbol>CMT</symbol>
-        <trust>3</trust>
-    </currency>
+    <!--<currency>-->
+        <!--<symbol>CMT</symbol>-->
+        <!--<trust>3</trust>-->
+    <!--</currency>-->
     <currency>
         <symbol>CMP</symbol>
         <trust>3</trust>
@@ -903,10 +904,10 @@
         <symbol>FRN</symbol>
         <trust>3</trust>
     </currency>
-    <currency>
-        <symbol>FUEL</symbol>
-        <trust>3</trust>
-    </currency>
+    <!--<currency>-->
+        <!--<symbol>FUEL</symbol>-->
+        <!--<trust>3</trust>-->
+    <!--</currency>-->
     <currency>
         <symbol>FJC</symbol>
         <trust>3</trust>

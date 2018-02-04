@@ -1,20 +1,25 @@
 package com.core;
 
 import com.commons.Exchanges;
+import com.commons.constants.StringConstants;
 import com.commons.model.Pair;
 import com.commons.utils.ListUtils;
+import com.core.utils.Telegram;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 /**
  * Created by Manel on 03/02/2018.
  */
 @Component
 public class FilterResults<O> {
+
+    @Autowired
+    private Telegram telegram;
 
     private List<Pair<Exchanges>> exchangesPairRunning;
     private Set<Oportunitat> oportunitatSet;
@@ -63,4 +68,35 @@ public class FilterResults<O> {
         return null;
     }
 
+    public void removeOldOportunities() {
+        ZonedDateTime now = ZonedDateTime.now();
+        Iterator<Oportunitat> iterator = oportunitatSet.iterator();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Oportunitats Eliminades").append(StringConstants.NEW_LINE)
+                .append("-------------------------").append(StringConstants.NEW_LINE);
+
+        while (iterator.hasNext()) {
+            Oportunitat oportunitat = iterator.next();
+            long betweenHours = ChronoUnit.HOURS.between(now, oportunitat.getLastPickOutInstant());
+            if (betweenHours > 1) {
+
+                sb.append(oportunitat.getOriginExchange()).append("-")
+                        .append(oportunitat.getDestinyExchange()).append(StringConstants.NEW_LINE)
+                        .append(oportunitat.getOriginPrice().getSymbol()).append("-")
+                        .append(oportunitat.getDestinyPrice().getSymbol()).append(StringConstants.NEW_LINE)
+                        .append(oportunitat.getOriginPrice().getAskPrice()).append("-").append(StringConstants.NEW_LINE)
+                        .append(oportunitat.getDestinyPrice().getBidPrice()).append(StringConstants.NEW_LINE)
+                        .append("Durant ").append(betweenHours).append(" horas");
+
+                telegram.sendMessage(sb.toString(), null);
+                iterator.remove();
+            }
+        }
+
+    }
+
+    public void removePairs() {
+        exchangesPairRunning = new ArrayList<>();
+    }
 }
