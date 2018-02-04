@@ -4,8 +4,11 @@ import com.commons.model.BotPrice;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+
+import com.core.utils.Telegram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,10 @@ public class SchedulePriceRequest {
     @Autowired
     private ComparePrices comparePrices;
 
-    @Scheduled(initialDelay=5000, fixedDelay = 300000)
+    @Autowired
+    private Telegram telegram;
+
+    @Scheduled(initialDelay=15000, fixedDelay = 60000)
     public void callPrice() throws IOException {
         Instant t0 = Instant.now();
 
@@ -27,6 +33,7 @@ public class SchedulePriceRequest {
         comparePrices.findAndComparePrices(marketPrices);
 
         Instant t1 = Instant.now();
+        System.out.println(ZonedDateTime.now());
         System.out.println("Total: " + ChronoUnit.SECONDS.between(t0, t1));
     }
 

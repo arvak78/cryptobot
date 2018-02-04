@@ -42,6 +42,8 @@ public class CryptopiaPublicApi implements ExchangesApi {
         CryptopiaToBot toBot = new CryptopiaToBot();
         BotResponse botResponse = toBot.parseCurrencies(cryptopiaResponse);
 
+        System.out.println("Cryptopia Currencies: " + botResponse.getData().size());
+
         return botResponse;
 
     }

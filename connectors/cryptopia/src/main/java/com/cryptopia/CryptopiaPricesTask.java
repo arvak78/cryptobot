@@ -1,6 +1,7 @@
 package com.cryptopia;
 
 
+import com.commons.exceptions.ExchangeException;
 import com.commons.model.BotPrice;
 import com.commons.model.ExchangeTasks;
 import com.commons.model.Wrapper;
@@ -25,7 +26,7 @@ public class CryptopiaPricesTask implements ExchangeTasks{
   }
 
   @Override
-  public Map<String, BotPrice> getData() {
+  public Map<String, BotPrice> getData() throws ExchangeException {
 
     Map<String, BotPrice> botPriceWrapper = null;
 
@@ -33,13 +34,9 @@ public class CryptopiaPricesTask implements ExchangeTasks{
       Wrapper<Price> body = future.get(10, TimeUnit.SECONDS).getBody();
       CryptopiaToBot toBot = new CryptopiaToBot();
       botPriceWrapper = toBot.parsePrices(body);
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-      } catch (ExecutionException e) {
-        e.printStackTrace();
-      } catch (TimeoutException e) {
-        e.printStackTrace();
-      }
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        throw new ExchangeException("Error al recuperar precios de Cryptopia");
+    }
       return botPriceWrapper;
     }
 

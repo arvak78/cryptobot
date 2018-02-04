@@ -1,5 +1,7 @@
 package com.commons.model;
 
+import com.commons.exceptions.ExchangeException;
+
 import java.util.Map;
 
 /**
@@ -7,6 +9,6 @@ import java.util.Map;
  */
 public interface ExchangeTasks {
 
-    public Map<String, BotPrice> getData();
+    public Map<String, BotPrice> getData() throws ExchangeException;
 
 }

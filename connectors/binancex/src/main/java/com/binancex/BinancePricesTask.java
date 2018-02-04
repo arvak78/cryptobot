@@ -3,6 +3,7 @@ package com.binancex;
 
 import com.binancex.model.prices.Prices;
 import com.binancex.parser.BinanceToBot;
+import com.commons.exceptions.ExchangeException;
 import com.commons.model.BotPrice;
 import com.commons.model.ExchangeTasks;
 import com.commons.model.Wrapper;
@@ -26,7 +27,7 @@ public class BinancePricesTask implements ExchangeTasks{
   }
 
   @Override
-  public Map<String, BotPrice> getData() {
+  public Map<String, BotPrice> getData() throws ExchangeException {
 
     Map<String, BotPrice> botPriceWrapper = null;
 
@@ -34,15 +35,11 @@ public class BinancePricesTask implements ExchangeTasks{
       Prices[] body = future.get(10, TimeUnit.SECONDS).getBody();
       BinanceToBot toBot = new BinanceToBot();
       botPriceWrapper = toBot.parsePrices(body);
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-      } catch (ExecutionException e) {
-        e.printStackTrace();
-      } catch (TimeoutException e) {
-        e.printStackTrace();
-      }
-      return botPriceWrapper;
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      throw new ExchangeException("Error al recuperar precios de Binance");
     }
+    return botPriceWrapper;
+  }
 
 
 }

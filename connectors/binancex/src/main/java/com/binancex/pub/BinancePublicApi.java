@@ -48,6 +48,8 @@ public class BinancePublicApi implements ExchangesApi {
         BinanceToBot toBot = new BinanceToBot();
         botResponse = toBot.parseCurrency((Response) o);
 
+        System.out.println("Binance Currencies: " + botResponse.getData().size());
+
         return botResponse;
 
     }

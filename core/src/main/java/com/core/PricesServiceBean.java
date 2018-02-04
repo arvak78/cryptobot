@@ -2,6 +2,7 @@ package com.core;
 
 import com.commons.Exchanges;
 import com.commons.annotations.Exchange;
+import com.commons.exceptions.ExchangeException;
 import com.commons.model.BotPrice;
 import com.commons.model.ExchangeTasks;
 import com.commons.model.ExchangesApi;
@@ -10,10 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.core.cache.ConnectorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PricesServiceBean {
+
+    private static Logger log = LoggerFactory.getLogger(PricesServiceBean.class);
 
     public Map<String, BotPrice> getMarketPrices() {
 
@@ -40,7 +47,11 @@ public class PricesServiceBean {
         Map<String, BotPrice> priceMap = new HashMap<>();
 
         for (ExchangeTasks task : tasks) {
-            priceMap.putAll(task.getData());
+            try {
+                priceMap.putAll(task.getData());
+            } catch (ExchangeException e) {
+                log.error("Error recuperando precios: ", e);
+            }
         }
 
         return priceMap;

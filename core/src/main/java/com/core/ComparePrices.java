@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +34,9 @@ public class ComparePrices {
     @Autowired
     private Telegram telegram;
 
+    @Autowired
+    private FilterResults<Exchanges> filterResults;
+
     @Value("${core.limit.minpercent}")
     private String minPercentProfit;
 
@@ -41,8 +44,6 @@ public class ComparePrices {
     private String chatId;
 
     public void findAndComparePrices(Map<String, BotPrice> marketPrices) {
-
-        List<Oportunitat> oportunitatList = new ArrayList<>();
 
         matchCurrenciesByExchange = matchCurrencies.findMatchCurrenciesByExchange();
 
@@ -54,22 +55,18 @@ public class ComparePrices {
                 Map.Entry<Exchanges, List<String>> destinyExchange = iterator.next();
                 destinyExchange.getKey();
 
+                if (filterResults.existPair(originExchange.getExchange(), destinyExchange.getKey())) {
+                    continue;
+                }
+
+                filterResults.addPair(originExchange.getExchange(), destinyExchange.getKey());
+
                 Iterator<String> currencyIt = destinyExchange.getValue().iterator();
                 while (currencyIt.hasNext()) {
                     String currency = currencyIt.next();
-                    StringBuilder sb0 = new StringBuilder();
-                    StringBuilder sb1 = new StringBuilder();
-                    sb0.append(originExchange.getExchange())
-                            .append(ExchangeConstants.PRICE_KEY_SPLIT)
-                            .append(currency)
-                            .append(QUOTE_CURRENCY); //TODO: POr ahora siempre compara con BTC habra que cambiarlo
-                    sb1.append(destinyExchange.getKey())
-                            .append(ExchangeConstants.PRICE_KEY_SPLIT)
-                            .append(currency)
-                            .append(QUOTE_CURRENCY);
 
-                    BotPrice price0 = marketPrices.get(sb0.toString());
-                    BotPrice price1 = marketPrices.get(sb1.toString());
+                    BotPrice price0 = getFromMarketPriceMap(marketPrices, originExchange.getExchange(), currency);
+                    BotPrice price1 = getFromMarketPriceMap(marketPrices, destinyExchange.getKey(), currency);
 
                     if (price0 != null && price1 != null) {
                         MaxMinPrices maxMinPrices = getMaxMinPrices(price0, price1);
@@ -81,27 +78,19 @@ public class ComparePrices {
                             BigDecimal limit = calcProfitLimitPrice(askMinPrices, new BigDecimal(minPercentProfit));
 
                             if (isOportunitat(bidMaxPrices, limit)) {
-                                Oportunitat oportunitat = new Oportunitat();
-                                oportunitat.setOriginExchange(originExchange.getExchange());
-                                oportunitat.setDestinyExchange(destinyExchange.getKey());
-                                oportunitat.setBaseCurrency(currency);
-                                oportunitat.setQuoteCurrency(QUOTE_CURRENCY);
-                                oportunitat.setOriginPrice(price0);
-                                oportunitat.setDestinyPrice(price1);
-                                oportunitatList.add(oportunitat);
+                                Oportunitat oportunitat = createOportunitat(originExchange, destinyExchange, currency, price0, price1);
+                                BigDecimal profitPercent = (BigDecimal.ONE
+                                        .subtract(askMinPrices
+                                        .divide(bidMaxPrices, 2, RoundingMode.HALF_UP)))
+                                        .multiply(CENT);
 
-                                BigDecimal profitPercent = (BigDecimal.ONE.subtract(askMinPrices.divide(bidMaxPrices, 2, RoundingMode.HALF_UP))).multiply(CENT);
-
-                                StringBuilder telegramSb = new StringBuilder();
-                                telegramSb.append("OPORTUNITAT!! ").append(NEW_LINE)
-                                        .append(originExchange.getExchange()).append(SPACE)
-                                        .append(destinyExchange.getKey()).append(SPACE).append(NEW_LINE)
-                                        .append(currency).append("/").append(QUOTE_CURRENCY).append(NEW_LINE)
-                                        .append("askMinPrices: ").append(askMinPrices).append(NEW_LINE)
-                                        .append("bidMaxPrices: ").append(bidMaxPrices).append(NEW_LINE)
-                                        .append("Profit: " + profitPercent).append(" %");
-
-                                telegram.sendMessage(telegramSb.toString(), chatId);
+                                Oportunitat findedOportunity = filterResults.findOportunitat(oportunitat);
+                                if (findedOportunity == null) {
+                                    filterResults.addOportunitat(oportunitat);
+                                    addTelegramMessage(originExchange, destinyExchange, currency, askMinPrices, bidMaxPrices, profitPercent);
+                                } else {
+                                    findedOportunity.setLastPickOutInstant(Instant.now());
+                                }
                             }
                         }
                     }
@@ -109,6 +98,40 @@ public class ComparePrices {
             }
         }
 
+    }
+
+    private void addTelegramMessage(ExchangeMatch originExchange, Map.Entry<Exchanges, List<String>> destinyExchange, String currency, BigDecimal askMinPrices, BigDecimal bidMaxPrices, BigDecimal profitPercent) {
+        StringBuilder telegramSb = new StringBuilder();
+        telegramSb.append("OPORTUNITAT!! ").append(NEW_LINE)
+                .append(originExchange.getExchange()).append(SPACE)
+                .append(destinyExchange.getKey()).append(SPACE).append(NEW_LINE)
+                .append(currency).append("/").append(QUOTE_CURRENCY).append(NEW_LINE)
+                .append("askMinPrices: ").append(askMinPrices).append(NEW_LINE)
+                .append("bidMaxPrices: ").append(bidMaxPrices).append(NEW_LINE)
+                .append("Profit: " + profitPercent).append(" %");
+
+        telegram.sendMessage(telegramSb.toString(), chatId);
+    }
+
+    private Oportunitat createOportunitat(ExchangeMatch originExchange, Map.Entry<Exchanges, List<String>> destinyExchange, String currency, BotPrice price0, BotPrice price1) {
+        Oportunitat oportunitat = new Oportunitat();
+        oportunitat.setOriginExchange(originExchange.getExchange());
+        oportunitat.setDestinyExchange(destinyExchange.getKey());
+        oportunitat.setBaseCurrency(currency);
+        oportunitat.setQuoteCurrency(QUOTE_CURRENCY);
+        oportunitat.setOriginPrice(price0);
+        oportunitat.setDestinyPrice(price1);
+        oportunitat.setExposedInstant(Instant.now());
+        return oportunitat;
+    }
+
+    private BotPrice getFromMarketPriceMap(Map<String, BotPrice> marketPrices, Exchanges exchange, String currency) {
+        StringBuilder sb0 = new StringBuilder();
+        sb0.append(exchange)
+                .append(ExchangeConstants.PRICE_KEY_SPLIT)
+                .append(currency)
+                .append(QUOTE_CURRENCY); //TODO: POr ahora siempre compara con BTC habra que cambiarlo
+        return marketPrices.get(sb0.toString());
     }
 
     private MaxMinPrices getMaxMinPrices(BotPrice price0, BotPrice price1) {

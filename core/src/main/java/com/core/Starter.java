@@ -2,7 +2,6 @@ package com.core;
 
 import com.commons.Exchanges;
 import com.commons.annotations.Exchange;
-import com.commons.constants.CacheConstants;
 import com.commons.exceptions.ExchangeException;
 import com.commons.exceptions.MarshallException;
 import com.commons.model.BotCurrency;
@@ -10,7 +9,6 @@ import com.commons.model.BotResponse;
 import com.commons.model.ExchangesApi;
 import com.core.cache.ConnectorService;
 import com.core.cache.CurrencyService;
-import com.core.utils.ExchangeMatch;
 import com.core.utils.OperationCurrencies;
 import com.core.utils.ReadXml;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +24,7 @@ import java.util.Map;
 public class Starter {
 
     private OperationCurrencies operationCurrencies;
-    private Map<Exchanges, ExchangeMatch> matchCurrenciesByExchange;
+//    private Map<Exchanges, ExchangeMatch> matchCurrenciesByExchange;
 
     @Autowired
     private ConnectorService connectorService;
@@ -47,7 +43,7 @@ public class Starter {
 
 //        allClassesAnnotatedBy = FindAnotations.getInstance().findAllClassesAnnotatedBy(Exchange.class);
         initConnectorsAndCurrencies(findAnnotation.findAllClassesAnnotatedBy(Exchange.class));
-        findMatchCurrenciesByExchange();
+//        findMatchCurrenciesByExchange();
     }
 
 
@@ -82,27 +78,27 @@ public class Starter {
         }
     }
 
-    private void findMatchCurrenciesByExchange() {
-        Map<Exchanges, ExchangeMatch> mapMatch = new HashMap<>();
-        for (Exchanges exchange0 : Exchanges.values()) {
-            ExchangeMatch match = new ExchangeMatch(exchange0);
-            List<String> currencyMatchList = new ArrayList<>();
-            for (Exchanges exchange1 : Exchanges.values()) {
-                for (com.core.utils.Currency currency : operationCurrencies.getCurrency()) {
-                    if (exchange0 != exchange1) {
-                        BotCurrency currency0 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange0 + currency.getSymbol(), BotCurrency.class);
-                        BotCurrency currency1 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange1 + currency.getSymbol(), BotCurrency.class);
-                        if (currency0 != null && currency1 != null) {
-                            currencyMatchList.add(currency.getSymbol());
-                        }
-                        match.addMatch(exchange1, currencyMatchList);
-                    }
-                }
-            }
-            mapMatch.put(exchange0, match);
-        }
-
-        matchCurrenciesByExchange = mapMatch;
-    }
+//    private void findMatchCurrenciesByExchange() {
+//        Map<Exchanges, ExchangeMatch> mapMatch = new HashMap<>();
+//        for (Exchanges exchange0 : Exchanges.values()) {
+//            ExchangeMatch match = new ExchangeMatch(exchange0);
+//            List<String> currencyMatchList = new ArrayList<>();
+//            for (Exchanges exchange1 : Exchanges.values()) {
+//                for (com.core.utils.Currency currency : operationCurrencies.getCurrency()) {
+//                    if (exchange0 != exchange1) {
+//                        BotCurrency currency0 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange0 + currency.getSymbol(), BotCurrency.class);
+//                        BotCurrency currency1 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange1 + currency.getSymbol(), BotCurrency.class);
+//                        if (currency0 != null && currency1 != null) {
+//                            currencyMatchList.add(currency.getSymbol());
+//                        }
+//                        match.addMatch(exchange1, currencyMatchList);
+//                    }
+//                }
+//            }
+//            mapMatch.put(exchange0, match);
+//        }
+//
+//        matchCurrenciesByExchange = mapMatch;
+//    }
 
 }

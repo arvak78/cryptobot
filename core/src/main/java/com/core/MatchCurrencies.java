@@ -30,6 +30,9 @@ public class MatchCurrencies {
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private FilterResults<Exchanges> filterResults;
+
     public Map<Exchanges, ExchangeMatch> findMatchCurrenciesByExchange() {
 
         if (matchCurrenciesByExchange != null && matchCurrenciesByExchange.size() > 0) {
@@ -43,6 +46,8 @@ public class MatchCurrencies {
             for (Exchanges exchange1 : Exchanges.values()) {
                 for (com.core.utils.Currency currency : operationCurrencies.getCurrency()) {
                     if (exchange0 != exchange1) {
+//                        !filterResults.existPair(exchange0, exchange1)
+//                        filterResults.addPair(exchange0, exchange1);
                         BotCurrency currency0 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange0 + currency.getSymbol(), BotCurrency.class);
                         BotCurrency currency1 = cacheManager.getCache(CacheConstants.CURRENCIES).get(exchange1 + currency.getSymbol(), BotCurrency.class);
                         if (currency0 != null && currency1 != null) {
