@@ -7,5 +7,6 @@ import org.springframework.stereotype.Service;
  */
 public enum Exchanges {
     CRYPTOPIA,
-    BINANCE
+    BINANCE,
+    BITTREX
 }

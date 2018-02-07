@@ -16,13 +16,12 @@ public class ScheduleRemoveOportunities {
     private Telegram telegram;
 
 
+
     @Autowired
     private FilterResults<Exchanges> filterResults;
 
-//    @Scheduled(cron = "0 0 08,15/12 * *")
-    @Scheduled(cron = "0 0 8-21 * * *")
+    @Scheduled(initialDelay=300000, fixedDelay = 180000)
     public void callRemove() {
-        telegram.sendMessage("Remove called!!", null);
         filterResults.removeOldOportunities();
     }
 }

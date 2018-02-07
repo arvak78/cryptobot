@@ -1,15 +1,13 @@
-package com.core;
+package com.bittrex;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.math.BigDecimal;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CoreApplicationTests {
+public class BittrexApplicationTests {
 
 	@Test
 	public void contextLoads() {

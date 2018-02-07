@@ -70,27 +70,37 @@ public class FilterResults<O> {
 
     public void removeOldOportunities() {
         ZonedDateTime now = ZonedDateTime.now();
-        Iterator<Oportunitat> iterator = oportunitatSet.iterator();
+        boolean flag = false;
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("Oportunitats Eliminades").append(StringConstants.NEW_LINE)
-                .append("-------------------------").append(StringConstants.NEW_LINE);
+        if (oportunitatSet != null && oportunitatSet.size() > 0) {
 
-        while (iterator.hasNext()) {
-            Oportunitat oportunitat = iterator.next();
-            long betweenHours = ChronoUnit.HOURS.between(now, oportunitat.getLastPickOutInstant());
-            if (betweenHours > 1) {
+            Iterator<Oportunitat> iterator = oportunitatSet.iterator();
 
-                sb.append(oportunitat.getOriginExchange()).append("-")
-                        .append(oportunitat.getDestinyExchange()).append(StringConstants.NEW_LINE)
-                        .append(oportunitat.getOriginPrice().getSymbol()).append("-")
-                        .append(oportunitat.getDestinyPrice().getSymbol()).append(StringConstants.NEW_LINE)
-                        .append(oportunitat.getOriginPrice().getAskPrice()).append("-").append(StringConstants.NEW_LINE)
-                        .append(oportunitat.getDestinyPrice().getBidPrice()).append(StringConstants.NEW_LINE)
-                        .append("Durant ").append(betweenHours).append(" horas");
+            StringBuilder sb = new StringBuilder();
+            sb.append("Oportunitats Eliminades").append(StringConstants.NEW_LINE)
+                    .append("-------------------------------------").append(StringConstants.NEW_LINE);
 
+            while (iterator.hasNext()) {
+                Oportunitat oportunitat = iterator.next();
+                long between = ChronoUnit.MINUTES.between(oportunitat.getLastPickOutInstant(), now);
+                if (between >= 1) {
+                    flag = true;
+                    long exposedTime = ChronoUnit.MINUTES.between(oportunitat.getExposedInstant(), oportunitat.getLastPickOutInstant());
+
+                    sb.append(oportunitat.getOriginExchange()).append("-")
+                            .append(oportunitat.getDestinyExchange()).append(StringConstants.NEW_LINE)
+//                            .append(oportunitat.getOriginPrice().getSymbol()).append("-")
+                            .append(oportunitat.getDestinyPrice().getSymbol()).append(StringConstants.NEW_LINE)
+                            .append("minAskPrice: ").append(oportunitat.getOriginPrice().getAskPrice()).append("-").append(StringConstants.NEW_LINE)
+                            .append("maxBidPrice: ").append(oportunitat.getDestinyPrice().getBidPrice()).append(StringConstants.NEW_LINE)
+                            .append("Max profit: ").append(oportunitat.getProfitList().get(oportunitat.getProfitList().size()-1)).append(StringConstants.NEW_LINE)
+                            .append("Durant ").append(exposedTime).append(" minuts").append(StringConstants.NEW_LINE);
+
+                    iterator.remove();
+                }
+            }
+            if (flag == true) {
                 telegram.sendMessage(sb.toString(), null);
-                iterator.remove();
             }
         }
 

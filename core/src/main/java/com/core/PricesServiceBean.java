@@ -6,6 +6,7 @@ import com.commons.exceptions.ExchangeException;
 import com.commons.model.BotPrice;
 import com.commons.model.ExchangeTasks;
 import com.commons.model.ExchangesApi;
+import com.commons.utils.ListUtils;
 import com.commons.utils.reflection.FindAnotations;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class PricesServiceBean {
 
         Map<String, BotPrice> priceMap = new HashMap<>();
 
-        for (ExchangeTasks task : tasks) {
+        for (ExchangeTasks task : ListUtils.nullSafe(tasks)) {
             try {
                 priceMap.putAll(task.getData());
             } catch (ExchangeException e) {

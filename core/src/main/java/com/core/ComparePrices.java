@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
@@ -79,19 +78,27 @@ public class ComparePrices {
                             BigDecimal limit = calcProfitLimitPrice(askMinPrices, new BigDecimal(minPercentProfit));
 
                             if (isOportunitat(bidMaxPrices, limit)) {
-                                Oportunitat oportunitat = createOportunitat(originExchange, destinyExchange, currency, price0, price1);
-                                BigDecimal profitPercent = (BigDecimal.ONE
-                                        .subtract(askMinPrices
-                                        .divide(bidMaxPrices, 2, RoundingMode.HALF_UP)))
-                                        .multiply(CENT);
+                                Oportunitat oportunitat = createOportunitat(originExchange, destinyExchange,
+                                        currency, maxMinPrices.getMinPrice(), maxMinPrices.getMaxPrice());
+                                BigDecimal profitPercent = getProfit(askMinPrices, bidMaxPrices);
 
 
                                 Oportunitat findedOportunity = filterResults.findOportunitat(oportunitat);
                                 if (findedOportunity == null) {
                                     filterResults.addOportunitat(oportunitat);
-                                    addTelegramMessage(originExchange, destinyExchange, currency, askMinPrices, bidMaxPrices, profitPercent);
+                                    addTelegramOportunitat(maxMinPrices.getMinPrice().getExchange(), maxMinPrices.getMaxPrice().getExchange(),
+                                            currency, askMinPrices, bidMaxPrices, profitPercent);
                                 } else {
                                     findedOportunity.setLastPickOutInstant(ZonedDateTime.now());
+
+                                    BigDecimal lastProfitSeen = findedOportunity.getProfitList().get(findedOportunity.getProfitList().size()-1);
+                                    BigDecimal plusOne = lastProfitSeen.add(BigDecimal.ONE);
+                                    BigDecimal minusOne = lastProfitSeen.subtract(BigDecimal.ONE);
+                                    if (profitPercent.compareTo(plusOne) > 0 || profitPercent.compareTo(minusOne) < 0) {
+                                        findedOportunity.addProfitList(profitPercent);
+                                        addTelegramPlusProfit(maxMinPrices.getMinPrice().getExchange(), maxMinPrices.getMaxPrice().getExchange(),
+                                                currency, askMinPrices, bidMaxPrices, profitPercent);
+                                    }
                                 }
                             }
                         }
@@ -104,11 +111,31 @@ public class ComparePrices {
 
     }
 
-    private void addTelegramMessage(ExchangeMatch originExchange, Map.Entry<Exchanges, List<String>> destinyExchange, String currency, BigDecimal askMinPrices, BigDecimal bidMaxPrices, BigDecimal profitPercent) {
+    private BigDecimal getProfit(BigDecimal minPrice, BigDecimal maxPrice) {
+        return (BigDecimal.ONE
+                .subtract(minPrice
+                .divide(maxPrice, 3, RoundingMode.HALF_UP)))
+                .multiply(CENT).setScale(2);
+    }
+
+    private void addTelegramOportunitat(Exchanges minExchange, Exchanges maxExchange, String currency, BigDecimal askMinPrices, BigDecimal bidMaxPrices, BigDecimal profitPercent) {
         StringBuilder telegramSb = new StringBuilder();
         telegramSb.append("OPORTUNITAT!! ").append(NEW_LINE)
-                .append(originExchange.getExchange()).append(SPACE)
-                .append(destinyExchange.getKey()).append(SPACE).append(NEW_LINE)
+                .append(minExchange).append(SPACE)
+                .append(maxExchange).append(SPACE).append(NEW_LINE)
+                .append(currency).append("/").append(QUOTE_CURRENCY).append(NEW_LINE)
+                .append("askMinPrices: ").append(askMinPrices).append(NEW_LINE)
+                .append("bidMaxPrices: ").append(bidMaxPrices).append(NEW_LINE)
+                .append("Profit: " + profitPercent).append(" %");
+
+        telegram.sendMessage(telegramSb.toString(), chatId);
+    }
+
+    private void addTelegramPlusProfit(Exchanges minExchange, Exchanges maxExchange, String currency, BigDecimal askMinPrices, BigDecimal bidMaxPrices, BigDecimal profitPercent) {
+        StringBuilder telegramSb = new StringBuilder();
+        telegramSb.append("OPORTUNITAT!! PLUS PROFIT").append(NEW_LINE)
+                .append(minExchange).append(SPACE)
+                .append(maxExchange).append(SPACE).append(NEW_LINE)
                 .append(currency).append("/").append(QUOTE_CURRENCY).append(NEW_LINE)
                 .append("askMinPrices: ").append(askMinPrices).append(NEW_LINE)
                 .append("bidMaxPrices: ").append(bidMaxPrices).append(NEW_LINE)
@@ -127,6 +154,7 @@ public class ComparePrices {
         oportunitat.setDestinyPrice(price1);
         oportunitat.setExposedInstant(ZonedDateTime.now());
         oportunitat.setLastPickOutInstant(ZonedDateTime.now());
+        oportunitat.addProfitList(getProfit(price0.getAskPrice(), price1.getBidPrice()));
         return oportunitat;
     }
 
@@ -136,7 +164,13 @@ public class ComparePrices {
                 .append(ExchangeConstants.PRICE_KEY_SPLIT)
                 .append(currency)
                 .append(QUOTE_CURRENCY); //TODO: POr ahora siempre compara con BTC habra que cambiarlo
-        return marketPrices.get(sb0.toString());
+        BotPrice botPrice = marketPrices.get(sb0.toString());
+
+        if (botPrice != null) {
+            botPrice.setExchange(exchange);
+        }
+
+        return botPrice;
     }
 
     private MaxMinPrices getMaxMinPrices(BotPrice price0, BotPrice price1) {

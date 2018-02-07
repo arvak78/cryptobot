@@ -1,5 +1,6 @@
 package com.commons.model;
 
+import com.commons.Exchanges;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class BotPrice implements Comparable<BotPrice>{
+
+	private Exchanges exchange;
 
 	@JsonProperty("symbol")
 	private String symbol;
