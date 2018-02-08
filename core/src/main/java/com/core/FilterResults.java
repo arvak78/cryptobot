@@ -93,7 +93,8 @@ public class FilterResults<O> {
                             .append(oportunitat.getDestinyPrice().getSymbol()).append(StringConstants.NEW_LINE)
                             .append("minAskPrice: ").append(oportunitat.getOriginPrice().getAskPrice()).append("-").append(StringConstants.NEW_LINE)
                             .append("maxBidPrice: ").append(oportunitat.getDestinyPrice().getBidPrice()).append(StringConstants.NEW_LINE)
-                            .append("Max profit: ").append(oportunitat.getProfitList().get(oportunitat.getProfitList().size()-1)).append(StringConstants.NEW_LINE)
+//                            .append("Max profit: ").append(oportunitat.getProfitList().get(oportunitat.getProfitList().size()-1)).append(StringConstants.NEW_LINE)
+                            .append("Profit List: ").append(String.join(" %", String.valueOf(oportunitat.getProfitList())))
                             .append("Durant ").append(exposedTime).append(" minuts").append(StringConstants.NEW_LINE);
 
                     iterator.remove();

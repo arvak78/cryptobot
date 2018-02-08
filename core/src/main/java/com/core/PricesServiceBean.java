@@ -49,7 +49,10 @@ public class PricesServiceBean {
 
         for (ExchangeTasks task : ListUtils.nullSafe(tasks)) {
             try {
-                priceMap.putAll(task.getData());
+                Map<String, BotPrice> data = task.getData();
+                if (data != null){
+                    priceMap.putAll(data);
+                }
             } catch (ExchangeException e) {
                 log.error("Error recuperando precios: ", e);
             }

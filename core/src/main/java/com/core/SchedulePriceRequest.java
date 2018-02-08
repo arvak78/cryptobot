@@ -25,7 +25,7 @@ public class SchedulePriceRequest {
     @Autowired
     private Telegram telegram;
 
-    @Scheduled(initialDelay=15000, fixedDelay = 60000)
+    @Scheduled(initialDelay=15000, fixedDelayString = "${core.compare.delay}")
     public void callPrice() throws IOException {
         Instant t0 = Instant.now();
 

@@ -20,7 +20,7 @@ public class ScheduleRemoveOportunities {
     @Autowired
     private FilterResults<Exchanges> filterResults;
 
-    @Scheduled(initialDelay=300000, fixedDelay = 180000)
+    @Scheduled(initialDelay=300000, fixedDelayString = "${compare.remove.oportunities.delay}")
     public void callRemove() {
         filterResults.removeOldOportunities();
     }

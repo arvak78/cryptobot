@@ -272,10 +272,10 @@
         <symbol>BLC</symbol>
         <trust>3</trust>
     </currency>
-    <currency>
-        <symbol>BLZ</symbol>
-        <trust>3</trust>
-    </currency>
+    <!--<currency>-->
+        <!--<symbol>BLZ</symbol>-->
+        <!--<trust>3</trust>-->
+    <!--</currency>-->
     <currency>
         <symbol>BKCAT</symbol>
         <trust>3</trust>
