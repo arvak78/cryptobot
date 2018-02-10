@@ -2,6 +2,7 @@ package com.core;
 
 import com.commons.Exchanges;
 import com.commons.constants.ExchangeConstants;
+import com.commons.constants.TelegramEmojis;
 import com.commons.model.BotPrice;
 import com.core.utils.ExchangeMatch;
 import com.core.utils.Telegram;
@@ -94,10 +95,12 @@ public class ComparePrices {
                                     BigDecimal lastProfitSeen = findedOportunity.getProfitList().get(findedOportunity.getProfitList().size()-1);
                                     BigDecimal plusOne = lastProfitSeen.add(BigDecimal.ONE);
                                     BigDecimal minusOne = lastProfitSeen.subtract(BigDecimal.ONE);
-                                    if (profitPercent.compareTo(plusOne) > 0 || profitPercent.compareTo(minusOne) < 0) {
+                                    boolean isMore = profitPercent.compareTo(plusOne) > 0;
+                                    boolean isMinus = profitPercent.compareTo(minusOne) < 0;
+                                    if (isMore || isMinus) {
                                         findedOportunity.addProfitList(profitPercent);
                                         addTelegramPlusProfit(maxMinPrices.getMinPrice().getExchange(), maxMinPrices.getMaxPrice().getExchange(),
-                                                currency, askMinPrices, bidMaxPrices, profitPercent);
+                                                currency, askMinPrices, bidMaxPrices, profitPercent, isMore);
                                     }
                                 }
                             }
@@ -131,9 +134,11 @@ public class ComparePrices {
         telegram.sendMessage(telegramSb.toString(), chatId);
     }
 
-    private void addTelegramPlusProfit(Exchanges minExchange, Exchanges maxExchange, String currency, BigDecimal askMinPrices, BigDecimal bidMaxPrices, BigDecimal profitPercent) {
+    private void addTelegramPlusProfit(Exchanges minExchange, Exchanges maxExchange, String currency, BigDecimal askMinPrices, BigDecimal bidMaxPrices, BigDecimal profitPercent, boolean isMore) {
         StringBuilder telegramSb = new StringBuilder();
-        telegramSb.append("OPORTUNITAT!! PLUS PROFIT").append(NEW_LINE)
+
+        telegramSb
+                .append(getEmoji(isMore))
                 .append(minExchange).append(SPACE)
                 .append(maxExchange).append(SPACE).append(NEW_LINE)
                 .append(currency).append("/").append(QUOTE_CURRENCY).append(NEW_LINE)
@@ -142,6 +147,25 @@ public class ComparePrices {
                 .append("Profit: " + profitPercent).append(" %");
 
         telegram.sendMessage(telegramSb.toString(), chatId);
+    }
+
+    private StringBuilder getEmoji(boolean isMore) {
+        StringBuilder emoji = new StringBuilder();
+
+        if (isMore) {
+            emoji
+            .append(TelegramEmojis.GREEN_BOOK).append(TelegramEmojis.GREEN_BOOK)
+            .append(TelegramEmojis.GREEN_BOOK).append(TelegramEmojis.GREEN_BOOK)
+            .append(TelegramEmojis.GREEN_BOOK).append(TelegramEmojis.GREEN_BOOK)
+            .append(NEW_LINE);
+        } else {
+            emoji
+            .append(TelegramEmojis.RED_BOOK).append(TelegramEmojis.RED_BOOK)
+            .append(TelegramEmojis.RED_BOOK).append(TelegramEmojis.RED_BOOK)
+            .append(TelegramEmojis.RED_BOOK).append(TelegramEmojis.RED_BOOK)
+            .append(NEW_LINE);
+        }
+        return emoji;
     }
 
     private Oportunitat createOportunitat(ExchangeMatch originExchange, Map.Entry<Exchanges, List<String>> destinyExchange, String currency, BotPrice price0, BotPrice price1) {
